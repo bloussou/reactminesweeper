@@ -4,17 +4,17 @@ import Board from './Board';
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        const bombNumber = 2;
-        const numRow = 4;
+        const bombNumber = 10;
+        const numRow = 8;
         var gridGameResult = gridSetUp(numRow, bombNumber);
         this.state = {
             history: [{
-                squares: Array(numRow * numRow).fill(null),
+                squares: Array(numRow * numRow).fill("."),
             }],
             xIsNext: true,
             hasBeenClicked: false,
-            numRow: 4,
-            gridGame: gridGameResult[0],
+            numRow: numRow,
+            gridGame: gridGameResult[0].map((d) => (d === 0 ? " " : d)),
             bombPlace: gridGameResult[1],
         };
     }
@@ -23,7 +23,7 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (this.state.gridGame[i] === 0) {
+        if (this.state.gridGame[i] === " ") {
             var listShowed = exploreEmptySquare(i, this.state.numRow, this.state.gridGame);
             for (var j in listShowed) {
                 squares[listShowed[j]] = this.state.gridGame[listShowed[j]];
@@ -67,11 +67,11 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (squares[i] === null) {
+        if (squares[i] === " ") {
             squares[i] = "🏴‍"
         }
         else if (squares[i] === "🏴‍") {
-            squares[i] = null;
+            squares[i] = " ";
         }
         this.setState({
             history: history.concat([{
@@ -99,6 +99,7 @@ class Game extends React.Component {
                     squares={current.squares}
                     onClick={(i) => this.handleClick(i)}
                     onRightClick={(e, i) => this.handleRightClick(e, i)}
+                    rowSize={this.state.numRow}
                 />
                 <div className="game-info">
                     <div>{status}</div>
@@ -204,7 +205,7 @@ function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of sq
         var children = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
         for (var child in children) {
             if (visited.indexOf(children[child]) < 0) {
-                if (gridGame[children[child]] === 0) {
+                if (gridGame[children[child]] === " ") {
                     DFS(children[child]);
                 }
             }
