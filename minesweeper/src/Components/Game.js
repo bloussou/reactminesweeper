@@ -13,7 +13,8 @@ class Game extends React.Component {
             xIsNext: true,
             hasBeenClicked: false,
             numRow: 4,
-            gridGame: gridSetUp(numRow, bombNumber),
+            gridGame: gridSetUp(numRow, bombNumber)[0],
+            bombPlace: gridSetUp(numRow, bombNumber)[1],
         };
     }
 
@@ -33,7 +34,19 @@ class Game extends React.Component {
                 xIsNext: !this.state.xIsNext,
                 hasBeenClicked: true,
             });
-            return;
+        }
+        else if (this.state.gridGame[i] === "💣") {
+            for (var j in squares) {
+                squares[j] = this.state.gridGame[j];
+            }
+            this.setState({
+                history: history.concat([{
+                    squares: squares,
+                }]),
+                xIsNext: !this.state.xIsNext,
+                hasBeenClicked: true,
+            });
+            alert("you loose !")
         }
         else {
             squares[i] = this.state.gridGame[i];
@@ -55,29 +68,29 @@ class Game extends React.Component {
         const squares = current.squares.slice();
         if (squares[i] === null) {
             squares[i] = "🏴‍"
-            this.setState({
-                history: history.concat([{
-                    squares: squares,
-                }]),
-                xIsNext: !this.state.xIsNext,
-                hasBeenClicked: true,
-            });
-            return;
         }
+        else if (squares[i] === "🏴‍") {
+            squares[i] = null;
+        }
+        this.setState({
+            history: history.concat([{
+                squares: squares,
+            }]),
+            xIsNext: !this.state.xIsNext,
+            hasBeenClicked: true,
+        });
         return;
-
     }
 
     render() {
         const history = this.state.history;
         const current = history[history.length - 1];
-        const winner = calculateWinner(current.squares);
+        const winner = isWinner(current.squares, this.state.bombPlace);
 
         let status;
         if (winner) {
-            status = 'Winner: ' + winner;
-        } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            status = 'You WIn !!!!';
+            current.squares = this.state.gridGame;
         }
         return (
             <div>
@@ -96,8 +109,14 @@ class Game extends React.Component {
 }
 export default Game;
 
-function calculateWinner(squares) {
-    return null;
+function isWinner(squares, bombPlace) {
+    //check Win
+    for (var bomb in bombPlace) {
+        if (squares[bombPlace[bomb]] !== "🏴‍") {
+            return false;
+        }
+    }
+    return true;
 }
 function numSquare(numRow) { //we firstly build only square grid
     return numRow * numRow
@@ -169,7 +188,7 @@ function gridSetUp(rowNumber, bombNumber) { //Set up the grid for the start
             }
         }
     }
-    return result;
+    return [result, bombPlace];
 }
 
 function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of square to display when  you click on a zero
@@ -191,7 +210,6 @@ function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of sq
         }
     }
     DFS(indice); //here the list of the summit with zero who are neighbours
-    console.log(visited);
     //add the neighbours to visited
     for (var i in visited) {
         var coord = indices2rowColumn(visited[i], rowSize);
@@ -202,7 +220,6 @@ function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of sq
             }
         }
     }
-    console.log(visited);
     return visited;
 }
 
