@@ -6,6 +6,7 @@ class Game extends React.Component {
         super(props);
         const bombNumber = 2;
         const numRow = 4;
+        var gridGameResult = gridSetUp(numRow, bombNumber);
         this.state = {
             history: [{
                 squares: Array(numRow * numRow).fill(null),
@@ -13,8 +14,8 @@ class Game extends React.Component {
             xIsNext: true,
             hasBeenClicked: false,
             numRow: 4,
-            gridGame: gridSetUp(numRow, bombNumber)[0],
-            bombPlace: gridSetUp(numRow, bombNumber)[1],
+            gridGame: gridGameResult[0],
+            bombPlace: gridGameResult[1],
         };
     }
 
