@@ -31,6 +31,9 @@
   }
 }
 
+#button{
+  font-size : 6;
+}
 
 .grid-container {
   display: grid;

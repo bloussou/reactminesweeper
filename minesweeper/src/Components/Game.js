@@ -22,7 +22,7 @@ class Game extends React.Component {
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         if (this.state.gridGame[i] === 0) {
-            var listShowed = exploreEmptySquare(i, this.state.numRow, squares);
+            var listShowed = exploreEmptySquare(i, this.state.numRow, this.state.gridGame);
             for (var j in listShowed) {
                 squares[listShowed[j]] = this.state.gridGame[listShowed[j]];
             }
@@ -191,17 +191,18 @@ function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of sq
         }
     }
     DFS(indice); //here the list of the summit with zero who are neighbours
-
+    console.log(visited);
     //add the neighbours to visited
     for (var i in visited) {
         var coord = indices2rowColumn(visited[i], rowSize);
         var neibh = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
         for (var n in neibh) {
-            if (visited.indexOf(neibh[n] < 0)) {
+            if (visited.indexOf(neibh[n]) < 0) {
                 visited.push(neibh[n])
             }
         }
     }
+    console.log(visited);
     return visited;
 }
 
