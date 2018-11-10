@@ -4,11 +4,16 @@ import Board from './Board';
 class Game extends React.Component {
     constructor(props) {
         super(props);
+        const bombNumber = 2;
+        const squareNumber = 9;
+        const indices = Array(squareNumber).fill().map((_, idx) => idx);
+        console.log(chooseBombPlace(indices, bombNumber));
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
             }],
             xIsNext: true,
+            hasBeenClicked: false,
         };
     }
 
@@ -16,17 +21,21 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
+        if (squares[i]) {
             return;
         }
+
+
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
             history: history.concat([{
                 squares: squares,
             }]),
             xIsNext: !this.state.xIsNext,
+            hasBeenClicked: true,
         });
     }
+
     render() {
         const history = this.state.history;
         const current = history[history.length - 1];
@@ -52,6 +61,7 @@ class Game extends React.Component {
         );
     }
 }
+export default Game;
 
 function calculateWinner(squares) {
     const lines = [
@@ -72,7 +82,18 @@ function calculateWinner(squares) {
     }
     return null;
 }
-export default Game;
+
+function chooseBombPlace(indices, bombNumber) {
+    var availablePlace = indices
+    var result = [];
+    for (var i = 0; i < bombNumber; i++) {
+        var index = Math.floor(Math.random() * availablePlace.length);
+        result.push(availablePlace[index]);
+        availablePlace.splice(index, 1);
+    }
+    return result;
+}
+
 
 
 
