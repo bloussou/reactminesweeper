@@ -190,21 +190,9 @@ function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with
     let column = coord[1];
     if (column - 1 >= 0) {
         result.push([row, column - 1])
-        if (row - 1 >= 0) {
-            result.push([row - 1, column - 1])
-        }
-        if (row + 1 < rowSize) {
-            result.push([row + 1, column - 1])
-        }
     }
     if (column + 1 < columnSize) {
         result.push([row, column + 1])
-        if (row - 1 >= 0) {
-            result.push([row - 1, column + 1])
-        }
-        if (row + 1 < rowSize) {
-            result.push([row + 1, column + 1])
-        }
     }
     if (row - 1 >= 0) {
         result.push([row - 1, column])
