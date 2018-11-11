@@ -3,14 +3,20 @@ import styles from './styles/GameSetter.css';
 
 class GameSetter extends Component {
 
-
-    handleSubmit(e) {
+    handleSubmit(e) { //Handle the submit and check if the values enter in the form are integer
         e.preventDefault();
-        this.props.onChoose(this.refs.gridSize.value, this.refs.bombNumber.value);
+        let gridSize = parseInt(this.refs.gridSize.value);
+        let bombNumber = parseInt(this.refs.bombNumber.value);
+        if (isNaN(gridSize) || isNaN(bombNumber)) {
+            alert("Please put integer in the form");
+            return;
+        }
+        else {
+            this.props.onChoose(this.refs.gridSize.value, this.refs.bombNumber.value);
+        }
     }
 
-
-    render() {//onChange={this.handleSubmit}onSubmit={this.handleSubmit}onChange={this.handleChange}
+    render() {
         return (
             <div id="box">
                 <label id="Title">Start a new Game :</label>
