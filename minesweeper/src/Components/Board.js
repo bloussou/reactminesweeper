@@ -25,7 +25,10 @@ class Board extends React.Component {
     }
 
     render() {
-        var grid = Array(this.props.rowSize).fill().map((_, i) => this.renderRow(this.props.rowSize, i));
+        let newArray = Array(parseInt(this.props.rowSize));
+        let grid = newArray.fill().map((_, i) => {
+            return this.renderRow(parseInt(this.props.rowSize), i)
+        });
         return (
             <div>
                 {grid}

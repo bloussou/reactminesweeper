@@ -1,5 +1,6 @@
 import React from "react";
 import Board from './Board';
+import GameSetter from './GameSetter';
 
 class Game extends React.Component {
     constructor(props) {
@@ -11,9 +12,9 @@ class Game extends React.Component {
             history: [{
                 squares: Array(numRow * numRow).fill("."),
             }],
-            xIsNext: true,
-            hasBeenClicked: false,
+
             numRow: numRow,
+            bombNumber: bombNumber,
             gridGame: gridGameResult[0].map((d) => (d === 0 ? " " : d)),
             bombPlace: gridGameResult[1],
         };
@@ -32,8 +33,6 @@ class Game extends React.Component {
                 history: history.concat([{
                     squares: squares,
                 }]),
-                xIsNext: !this.state.xIsNext,
-                hasBeenClicked: true,
             });
         }
         else if (this.state.gridGame[i] === "💣") {
@@ -44,21 +43,16 @@ class Game extends React.Component {
                 history: history.concat([{
                     squares: squares,
                 }]),
-                xIsNext: !this.state.xIsNext,
-                hasBeenClicked: true,
             });
             alert("you loose !")
         }
         else {
             squares[i] = this.state.gridGame[i];
-
         }
         this.setState({
             history: history.concat([{
                 squares: squares,
             }]),
-            xIsNext: !this.state.xIsNext,
-            hasBeenClicked: true,
         });
     }
 
@@ -67,34 +61,44 @@ class Game extends React.Component {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (squares[i] === " ") {
+        if (squares[i] === ".") {
             squares[i] = "🏴‍"
         }
         else if (squares[i] === "🏴‍") {
-            squares[i] = " ";
+            squares[i] = ".";
         }
         this.setState({
             history: history.concat([{
                 squares: squares,
             }]),
-            xIsNext: !this.state.xIsNext,
-            hasBeenClicked: true,
         });
         return;
+    }
+
+    onChoose(newGridSize) {
+        var gridGameResult = gridSetUp(newGridSize, this.state.bombNumber);
+        this.setState({
+            history: [{
+                squares: Array(newGridSize * newGridSize).fill("."),
+            }],
+            numRow: newGridSize,
+            gridGame: gridGameResult[0].map((d) => (d === 0 ? " " : d)),
+            bombPlace: gridGameResult[1],
+        });
     }
 
     render() {
         const history = this.state.history;
         const current = history[history.length - 1];
         const winner = isWinner(current.squares, this.state.bombPlace);
-
         let status;
         if (winner) {
-            status = 'You WIn !!!!';
+            status = 'You Win !!!!';
             current.squares = this.state.gridGame;
         }
         return (
             <div>
+                <GameSetter onChoose={(newGridSize) => this.onChoose(newGridSize)} />
                 <Board
                     squares={current.squares}
                     onClick={(i) => this.handleClick(i)}
@@ -103,9 +107,8 @@ class Game extends React.Component {
                 />
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{/* TODO */}</ol>
                 </div>
-            </div>
+            </div >
         );
     }
 }
