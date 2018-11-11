@@ -16,7 +16,7 @@ class Board extends React.Component {
     }
 
     renderRow(rowSize, rowNumber) {
-        var col = Array(rowSize).fill().map((_, i) => this.renderSquare(rowNumber * rowSize + i))//j * this.props.numRow +
+        let col = Array(rowSize).fill().map((_, i) => this.renderSquare(rowNumber * rowSize + i))//j * this.props.numRow +
         return (
             <div className="board-row">
                 {col}

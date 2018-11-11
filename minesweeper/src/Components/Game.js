@@ -7,7 +7,7 @@ class Game extends React.Component {
         super(props);
         const bombNumber = 10;
         const numRow = 8;
-        var gridGameResult = gridSetUp(numRow, bombNumber);
+        let gridGameResult = gridSetUp(numRow, bombNumber);
         this.state = {
             history: [{
                 squares: Array(numRow * numRow).fill("."),
@@ -25,8 +25,8 @@ class Game extends React.Component {
         const current = history[history.length - 1];
         const squares = current.squares.slice();
         if (this.state.gridGame[i] === " ") {
-            var listShowed = exploreEmptySquare(i, this.state.numRow, this.state.gridGame);
-            for (var j in listShowed) {
+            let listShowed = exploreEmptySquare(i, this.state.numRow, this.state.gridGame);
+            for (let j in listShowed) {
                 squares[listShowed[j]] = this.state.gridGame[listShowed[j]];
             }
             this.setState({
@@ -36,7 +36,7 @@ class Game extends React.Component {
             });
         }
         else if (this.state.gridGame[i] === "💣") {
-            for (var j in squares) {
+            for (let j in squares) {
                 squares[j] = this.state.gridGame[j];
             }
             this.setState({
@@ -75,13 +75,14 @@ class Game extends React.Component {
         return;
     }
 
-    onChoose(newGridSize) {
-        var gridGameResult = gridSetUp(newGridSize, this.state.bombNumber);
+    onChoose(newGridSize, newBombNumber) {
+        let gridGameResult = gridSetUp(newGridSize, newBombNumber);
         this.setState({
             history: [{
                 squares: Array(newGridSize * newGridSize).fill("."),
             }],
             numRow: newGridSize,
+            bombNumber: newBombNumber,
             gridGame: gridGameResult[0].map((d) => (d === 0 ? " " : d)),
             bombPlace: gridGameResult[1],
         });
@@ -98,7 +99,7 @@ class Game extends React.Component {
         }
         return (
             <div>
-                <GameSetter onChoose={(newGridSize) => this.onChoose(newGridSize)} />
+                <GameSetter onChoose={(newGridSize, newBombNumber) => this.onChoose(newGridSize, newBombNumber)} />
                 <Board
                     squares={current.squares}
                     onClick={(i) => this.handleClick(i)}
@@ -116,7 +117,7 @@ export default Game;
 
 function isWinner(squares, bombPlace) {
     //check Win
-    for (var bomb in bombPlace) {
+    for (let bomb in bombPlace) {
         if (squares[bombPlace[bomb]] !== "🏴‍") {
             return false;
         }
@@ -128,10 +129,10 @@ function numSquare(numRow) { //we firstly build only square grid
 }
 
 function chooseBombPlace(indices, bombNumber) { //Return the indices of the bomb in the available list of places
-    var availablePlace = indices
-    var result = [];
-    for (var i = 0; i < bombNumber; i++) {
-        var index = Math.floor(Math.random() * availablePlace.length);
+    let availablePlace = indices
+    let result = [];
+    for (let i = 0; i < bombNumber; i++) {
+        let index = Math.floor(Math.random() * availablePlace.length);
         result.push(availablePlace[index]);
         availablePlace.splice(index, 1);
     }
@@ -147,9 +148,9 @@ function rowColumn2indice(coord, rowSize) {
 }
 
 function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with all the neighbours of a poit according to his coordinates
-    var result = [];
-    var row = coord[0];
-    var column = coord[1];
+    let result = [];
+    let row = coord[0];
+    let column = coord[1];
     if (column - 1 >= 0) {
         result.push([row, column - 1])
         if (row - 1 >= 0) {
@@ -178,16 +179,16 @@ function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with
 }
 
 function gridSetUp(rowNumber, bombNumber) { //Set up the grid for the start
-    var squareNumber = numSquare(rowNumber);
-    var indices = Array(squareNumber).fill().map((_, idx) => idx);
-    var bombPlace = chooseBombPlace(indices, bombNumber);
-    var result = Array(squareNumber).fill(0);
-    for (var key in bombPlace) {
-        var bombIndice = bombPlace[key];
+    let squareNumber = numSquare(rowNumber);
+    let indices = Array(squareNumber).fill().map((_, idx) => idx);
+    let bombPlace = chooseBombPlace(indices, bombNumber);
+    let result = Array(squareNumber).fill(0);
+    for (let key in bombPlace) {
+        let bombIndice = bombPlace[key];
         result[bombIndice] = "💣";
-        var coord = indices2rowColumn(bombIndice, rowNumber);
-        var neighb = getNeighboursCoord(coord, rowNumber, rowNumber).map((d) => rowColumn2indice(d, rowNumber)); //indices' list of the neighbours
-        for (var i in neighb) {
+        let coord = indices2rowColumn(bombIndice, rowNumber);
+        let neighb = getNeighboursCoord(coord, rowNumber, rowNumber).map((d) => rowColumn2indice(d, rowNumber)); //indices' list of the neighbours
+        for (let i in neighb) {
             if (!(bombPlace.indexOf(neighb[i]) >= 0)) { //if this is not the place of a bomb
                 result[neighb[i]] += 1
             }
@@ -197,16 +198,16 @@ function gridSetUp(rowNumber, bombNumber) { //Set up the grid for the start
 }
 
 function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of square to display when  you click on a zero
-    var visited = [];
+    let visited = [];
     function color(s) {
         visited.push(s)
     }
 
     function DFS(s) {
         color(s);
-        var coord = indices2rowColumn(s, rowSize);
-        var children = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
-        for (var child in children) {
+        let coord = indices2rowColumn(s, rowSize);
+        let children = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
+        for (let child in children) {
             if (visited.indexOf(children[child]) < 0) {
                 if (gridGame[children[child]] === " ") {
                     DFS(children[child]);
@@ -216,10 +217,10 @@ function exploreEmptySquare(indice, rowSize, gridGame) { //return the list of sq
     }
     DFS(indice); //here the list of the summit with zero who are neighbours
     //add the neighbours to visited
-    for (var i in visited) {
-        var coord = indices2rowColumn(visited[i], rowSize);
-        var neibh = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
-        for (var n in neibh) {
+    for (let i in visited) {
+        let coord = indices2rowColumn(visited[i], rowSize);
+        let neibh = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2indice(d, rowSize));
+        for (let n in neibh) {
             if (visited.indexOf(neibh[n]) < 0) {
                 visited.push(neibh[n])
             }
