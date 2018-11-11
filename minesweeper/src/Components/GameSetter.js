@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import styles from './styles/GameSetter.css';
 
 class GameSetter extends Component {
-
-    handleSubmit(e) { //Handle the submit and check if the values enter in the form are integer
+    /**
+     * Handle the submit and check if the values enter in the form are integer
+     * @param {*} e 
+     */
+    handleSubmit(e) {
         e.preventDefault();
         let gridSize = parseInt(this.refs.gridSize.value);
         let bombNumber = parseInt(this.refs.bombNumber.value);

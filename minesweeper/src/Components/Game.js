@@ -18,8 +18,11 @@ class Game extends React.Component {
             bombPlace: gridGameResult[1],
         };
     }
-
-    handleClick(i) { //Handle the left click on the grid
+    /**
+     * Handle the left click on the grid
+     * @param {*} i 
+     */
+    handleClick(i) {
         const history = this.state.history;
         const current = history[history.length - 1];
         const squares = current.squares.slice();
@@ -54,8 +57,12 @@ class Game extends React.Component {
             }]),
         });
     }
-
-    handleRightClick(e, i) { // Handle the right click on the grid
+    /**
+     * Handle the right click on the grid
+     * @param {*} e event
+     * @param {*} i index of the clicked square
+     */
+    handleRightClick(e, i) {
         e.preventDefault();
         const history = this.state.history;
         const current = history[history.length - 1];
@@ -73,8 +80,12 @@ class Game extends React.Component {
         });
         return;
     }
-
-    onChoose(newGridSize, newBombNumber) { // Handle the form submission
+    /**
+     * Handle the form submission
+     * @param {*} newGridSize 
+     * @param {*} newBombNumber 
+     */
+    onChoose(newGridSize, newBombNumber) {
         let gridGameResult = gridSetUp(newGridSize, newBombNumber);
         this.setState({
             history: [{
@@ -114,7 +125,12 @@ class Game extends React.Component {
 }
 export default Game;
 
-function isWinner(squares, bombPlace) {//If the game ended with a victory
+/**
+ * Check if the game is ended
+ * @param {*} squares The current state of the game
+ * @param {*} bombPlace The place of the bomb
+ */
+function isWinner(squares, bombPlace) {
     for (let bomb in bombPlace) {
         if (squares[bombPlace[bomb]] !== "🏴‍") {
             return false;
@@ -123,28 +139,50 @@ function isWinner(squares, bombPlace) {//If the game ended with a victory
     return true;
 }
 
-function numSquare(numRow) { //we firstly build only square grid
+function numSquare(numRow) {
     return numRow * numRow
 }
 
-function chooseBombPlace(index, bombNumber) { //Return the index of the bomb in the available list of places
-    let availablePlace = index
+/**
+ * Return an array containing the index of the bomb. It avoids to take to times the same place
+ * @param {*} indexes the list of available index
+ * @param {*} bombNumber the number of bomb you want in the grid
+ */
+function chooseBombPlace(indexes, bombNumber) {
+    let availablePlace = indexes
     let result = [];
     for (let i = 0; i < bombNumber; i++) {
-        let index = Math.floor(Math.random() * availablePlace.length);
-        result.push(availablePlace[index]);
-        availablePlace.splice(index, 1);
+        let indexes = Math.floor(Math.random() * availablePlace.length);
+        result.push(availablePlace[indexes]);
+        availablePlace.splice(indexes, 1);
     }
     return result;
 }
 
-function index2rowColumn(i, rowSize) { //Transform the number of the square into a set of coordinates. The origin is on the top-left corner
+/**
+ * Transform the number of the square into a set of coordinates. The origin is on the top-left corner
+ * @param {*} i The index of the sqaure
+ * @param {*} rowSize the size of the grid
+ */
+function index2rowColumn(i, rowSize) {
     return ([Math.floor(i / rowSize), i % rowSize]);
 }
 
-function rowColumn2index(coord, rowSize) { //Transform coordinate to index in the grid
+/**
+ * Transform coordinate to index in the grid
+ * @param {*} coord [x,y], the coord of the square
+ * @param {*} rowSize the size of the grid
+ */
+function rowColumn2index(coord, rowSize) {
     return rowSize * coord[0] + coord[1];
 }
+
+/**
+ * Return an array with all the neighbours of a poit according to his coordinates
+ * @param {*} coord [x,y], the coord of the square
+ * @param {*} rowSize the size of the grid
+ * @param {*} columnSize the size of the grid (the same because I choose to build a square board game)
+ */
 
 function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with all the neighbours of a poit according to his coordinates
     let result = [];
@@ -177,7 +215,12 @@ function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with
     return result;
 }
 
-function gridSetUp(rowNumber, bombNumber) { //Set up the grid for the start
+/**
+ * Set up the grid Game where all the games attributes are stored
+ * @param {*} rowNumber The size of the grid
+ * @param {*} bombNumber The numbers of bomb you want in the grid
+ */
+function gridSetUp(rowNumber, bombNumber) {
     let squareNumber = numSquare(rowNumber);
     let indices = Array(squareNumber).fill().map((_, idx) => idx);
     let bombPlace = chooseBombPlace(indices, bombNumber);
@@ -196,13 +239,28 @@ function gridSetUp(rowNumber, bombNumber) { //Set up the grid for the start
     return [result, bombPlace];
 }
 
+/**
+ * A function to find the cluster containing the clicked empty square
+ * @param {int} index The index of the clicked empty sqaure
+ * @param {*} rowSize The size of the row
+ * @param {*} gridGame The game grid containing the value of each square
+ */
 function exploreEmptySquare(index, rowSize, gridGame) { //return the list of square to display when  you click on a zero
     let visited = [];
+
+    /**
+     * Helping function for the DFS
+     * @param {*} s The index of the square in the grid
+     */
     function color(s) {
         visited.push(s)
     }
 
-    function DFS(s) {
+    /**
+     * Depth First Search
+     * @param {*} s The index of the square in the grid
+     */
+    function DFS(s) { //
         color(s);
         let coord = index2rowColumn(s, rowSize);
         let children = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2index(d, rowSize));

@@ -2,8 +2,11 @@ import React from "react";
 import Square from './Square';
 
 class Board extends React.Component {
-
-    renderSquare(i) {// It builds the square according to their numbers in the grid
+    /**
+     * It builds the square according to their indexes in the grid
+     * @param {*} i index
+     */
+    renderSquare(i) {
         return (
             <Square value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
@@ -11,7 +14,12 @@ class Board extends React.Component {
         );
     }
 
-    renderRow(rowSize, rowNumber) { //It builds the grid row after row
+    /**
+     * It builds a row according to the size of the row number of the row (zero for the top row, rowSize-1 for the bottom row)
+     * @param {*} rowSize 
+     * @param {*} rowNumber 
+     */
+    renderRow(rowSize, rowNumber) {
         let col = Array(rowSize).fill().map((_, i) => this.renderSquare(rowNumber * rowSize + i))
         return (
             <div className="board-row">
@@ -20,7 +28,7 @@ class Board extends React.Component {
         )
     }
 
-    render() { //It renders the grid
+    render() {
         let grid = Array(parseInt(this.props.rowSize)).fill().map((_, i) => this.renderRow(parseInt(this.props.rowSize), i));
         return (
             <div>
