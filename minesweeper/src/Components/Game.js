@@ -184,7 +184,38 @@ function rowColumn2index(coord, rowSize) {
  * @param {*} columnSize the size of the grid (the same because I choose to build a square board game)
  */
 
-function getNeighboursCoord(coord, rowSize, columnSize) { //return an array with all the neighbours of a poit according to his coordinates
+function getNeighboursCoord(coord, rowSize, columnSize) {
+    let result = [];
+    let row = coord[0];
+    let column = coord[1];
+    if (column - 1 >= 0) {
+        result.push([row, column - 1])
+        if (row - 1 >= 0) {
+            result.push([row - 1, column - 1])
+        }
+        if (row + 1 < rowSize) {
+            result.push([row + 1, column - 1])
+        }
+    }
+    if (column + 1 < columnSize) {
+        result.push([row, column + 1])
+        if (row - 1 >= 0) {
+            result.push([row - 1, column + 1])
+        }
+        if (row + 1 < rowSize) {
+            result.push([row + 1, column + 1])
+        }
+    }
+    if (row - 1 >= 0) {
+        result.push([row - 1, column])
+    }
+    if (row + 1 < rowSize) {
+        result.push([row + 1, column])
+    }
+    return result;
+}
+
+function getNeighboursCoordSearch(coord, rowSize, columnSize) {
     let result = [];
     let row = coord[0];
     let column = coord[1];
@@ -265,7 +296,7 @@ function exploreEmptySquare(index, rowSize, gridGame) { //return the list of squ
     //add the neighbours to visited
     for (let i in visited) {
         let coord = index2rowColumn(visited[i], rowSize);
-        let neibh = getNeighboursCoord(coord, rowSize, rowSize).map((d) => rowColumn2index(d, rowSize));
+        let neibh = getNeighboursCoordSearch(coord, rowSize, rowSize).map((d) => rowColumn2index(d, rowSize));
         for (let n in neibh) {
             if (visited.indexOf(neibh[n]) < 0) {
                 visited.push(neibh[n])
