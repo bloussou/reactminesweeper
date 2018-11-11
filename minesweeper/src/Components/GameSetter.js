@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styles from './styles/GameSetter.css';
 
 class GameSetter extends Component {
 
@@ -11,18 +12,24 @@ class GameSetter extends Component {
 
     render() {//onChange={this.handleSubmit}onSubmit={this.handleSubmit}onChange={this.handleChange}
         return (
-            <div>
-                <label>Start a new Game :</label>
+            <div id="box">
+                <label id="Title">Start a new Game :</label>
                 <form id='choose-gridSize' onSubmit={this.handleSubmit.bind(this)}>
-                    <label>
-                        Choose the grid size :
+                    <div>
+                        <label>
+                            Choose the grid size :
                         <input type="text" required ref="gridSize" placeholder="Choose the grid size" />
-                    </label>
-                    <label>
-                        Choose the number of bombs :
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Choose the number of bombs :
                         <input type="text" required ref="bombNumber" placeholder="Choose the bomb number" />
-                    </label>
-                    <input type="submit" value="Choose" />
+                        </label>
+                    </div>
+                    <div>
+                        <input type="submit" value="Choose" />
+                    </div>
                 </form>
             </div>
         );
